@@ -1,5 +1,7 @@
+import { useRecipeBook } from '@/recipeBook/recipe';
 import { Box, Button, Container, Heading, Input, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import { Toaster, toaster } from "@/components/ui/toaster";
+import React, { useState } from 'react';
 import { useEffect } from 'react';
 
 const CreatePage = () => {
@@ -17,6 +19,27 @@ const CreatePage = () => {
             image:"",
         });
 
+        const {createRecipe} = useRecipeBook()
+
+        const handleAddRecipe = async () => {
+            const {success,message} = await createRecipe(newRecipe);
+            if(!success){
+                toaster.create({
+                    title: `Error`,
+                    description: message,
+                    type: "error",
+                })
+            }else{
+                toaster.create({
+                   title: "Success",
+                   description: "Recipe Written",
+                   type: "success",
+                })
+            }
+            console.log("Success: ",success);
+            console.log("Message: ", message);
+        };
+
   return (
     <Container maxW = {"container.sm"} marginTop = {20}>
         <VStack spacing = {8}>
@@ -25,7 +48,7 @@ const CreatePage = () => {
                 <Heading as ={"h1"} size = {'2xl'} textAlign = {'center'}>
                 Write a Recipe
             </Heading>
-                <Input
+                <Input 
                         placeholder = 'Recipe Name' //placeholder text in the input box
                         name ='name' 
                         value = {newRecipe.name} //the value will be the name in our useState above
@@ -49,13 +72,13 @@ const CreatePage = () => {
                         value = {newRecipe.image} 
                         onChange={(e) => setNewRecipe({...newRecipe, image: e.target.value })} 
                     />
-
-                    <Button colorScheme = '#EAE0C8' w='full'>
+                    <Button colorScheme = '#EAE0C8' onClick= {handleAddRecipe} w='full' >
                         Create
                     </Button>
                 </VStack>
             </Box>
         </VStack>
+        <Toaster />
     </Container>
   )
 };
