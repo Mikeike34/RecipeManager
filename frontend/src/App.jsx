@@ -12,9 +12,9 @@ function App() {
     <Box minH ={"100vh"}>
       <Navbar />
       <Routes>
-        <Route path ='/' element ={<LoginPage />} />
+        <Route path ='/login' element ={<LoginPage />} />
         <Route path ='/create' element ={<CreatePage />} />
-        <Route path ='/home' element ={<HomePage />} />
+        <Route path ='/' element ={<HomePage />} />
         <Route path ='/register' element ={<RegisterPage />} />
       </Routes>
     </Box>

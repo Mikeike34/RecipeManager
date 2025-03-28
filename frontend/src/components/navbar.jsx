@@ -25,7 +25,7 @@ const Navbar = () => {
                 bgClip = {"text"}
                 px = {4}
             >
-                <Link to = {"/home"}>Recipe Manager</Link>
+                <Link to = {"/"}>Recipe Manager</Link>
             </Text>
 
             <HStack spacing = {2} alignItems = {'center'} px = {4}>

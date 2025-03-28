@@ -6,6 +6,7 @@ import jsconfigPaths from "vite-jsconfig-paths"
 export default defineConfig({
   plugins: [react(),jsconfigPaths()],
   server: { //now whenever we visit /api, it will be prefixed with http://localhost:5000
+    port: 5000,
     proxy:{
       "/api":{
         target: "http://localhost:5000"

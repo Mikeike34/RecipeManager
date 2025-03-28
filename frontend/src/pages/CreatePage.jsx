@@ -12,33 +12,33 @@ const CreatePage = () => {
             };
         }, []);
 
-        const[newRecipe, setNewRecipe] = useState({
-            name:"",
-            ingredient:[],
-            instruction:"",
-            image:"",
-        });
+    const[newRecipe, setNewRecipe] = useState({
+        name:"",
+        ingredient:[],
+        instruction:"",
+        image:"",
+     });
 
-        const {createRecipe} = useRecipeBook()
+    const {createRecipe} = useRecipeBook()
 
-        const handleAddRecipe = async () => {
-            const {success,message} = await createRecipe(newRecipe);
-            if(!success){
-                toaster.create({
-                    title: `Error`,
-                    description: message,
-                    type: "error",
-                })
-            }else{
-                toaster.create({
-                   title: "Success",
-                   description: "Recipe Written",
-                   type: "success",
-                })
-            }
-            console.log("Success: ",success);
-            console.log("Message: ", message);
-        };
+    const handleAddRecipe = async () => {
+        const {success,message} = await createRecipe(newRecipe);
+        if(!success){
+            toaster.create({
+                title: `Error`,
+                description: message,
+                type: "error",
+            })
+        }else{
+            toaster.create({
+                title: "Success",
+                description: "Recipe Written",
+                type: "success",
+            })
+        }
+        console.log("Success: ",success);
+        console.log("Message: ", message);
+    };
 
   return (
     <Container maxW = {"container.sm"} marginTop = {20}>
