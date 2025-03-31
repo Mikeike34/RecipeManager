@@ -1,9 +1,9 @@
-import { Box, Button, Container, Heading, Input, VStack } from '@chakra-ui/react';
+import { Box, Button, Container, Heading, HStack, Input, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useUserData } from '../../userData/user';
 import { toaster, Toaster } from '@/components/ui/toaster';
 import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const LoginPage = () => {
@@ -68,13 +68,25 @@ const LoginPage = () => {
                         value ={user.password}
                         onChange={(e) => setUser({...user, password: e.target.value})}    
                     />
-                    <Button 
-                        colorScheme = '#EAE0C8' 
-                        onClick = {handleUserLogin}  
-                        w = 'full'
-                    >
-                        Login
-                    </Button>
+                    <p>Don't have an account? Register</p>
+                    <HStack justify = {'center'}>
+                        <Button 
+                            colorScheme = '#EAE0C8' 
+                            onClick = {handleUserLogin}  
+                            w = 'full'
+                        >
+                            Login
+                        </Button>
+                            <Button 
+                                colorScheme = '#EAE0C8' 
+                                w= 'full'
+                            >
+                                <Link to ={'/register'}>
+                                    Register
+                                </Link>
+                            </Button>
+                    </HStack>
+                    
                 </VStack>
             </Box>
         </VStack>

@@ -1,7 +1,8 @@
-import { Container, VStack, Box, Heading, Input, Button } from '@chakra-ui/react';
+import { Container, VStack, Box, Heading, Input, Button, HStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { Toaster, toaster } from '@/components/ui/toaster';
 import { useUserData } from '../../userData/user.js';
+import { Link } from 'react-router-dom';
 
 const RegisterPage = () => {
     useEffect(() => {
@@ -44,15 +45,13 @@ const RegisterPage = () => {
     <Container maxW = {'container.sm'} marginTop = {20}>
             <VStack spacing = {8}>
                 <Box w ={'full'} bg = {'#536878'} p ={6} rounded = {'lg'} shadow={'md'}>
-                    <Heading as = {'h3'} textAlign ={'center'}>
-                        Don't Have An Account?
-                    </Heading>
+                    
                     <Heading as = {'h1'} size ={'3xl'} textAlign ={'center'}  marginBottom = {5}>
                         Register
                     </Heading>
                     <VStack spacing ={4}>
                         <Input 
-                            placeholder = 'username'
+                            placeholder = 'Username'
                             name = 'username'
                             type = 'text'
                             value ={newUser.username}
@@ -67,13 +66,23 @@ const RegisterPage = () => {
                             onChange={(e) => setNewUser({...newUser, password: e.target.value})}
                             
                         />
-                        <Button 
-                            colorScheme = '#EAE0C8' 
-                            onClick = {handleRegisterUser}  
-                            w = 'full'
+                        <p>Already have an account? Login</p>
+                        <HStack justify ={'center'}>
+                            <Button 
+                                colorScheme = '#EAE0C8' 
+                                onClick = {handleRegisterUser}  
+                                w = 'full'
+                                >
+                                Register
+                            </Button>
+                            <Button colorScheme = '#EAE0C8'
+                            w= 'full'
                             >
-                            Register
-                        </Button>
+                                <Link to ={'/login'}>
+                                Login
+                                </Link>
+                            </Button>
+                        </HStack>
                     </VStack>
                 </Box>
             </VStack>
