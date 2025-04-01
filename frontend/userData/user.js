@@ -1,5 +1,3 @@
-import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
 
 import {create} from 'zustand';
 
@@ -43,12 +41,11 @@ export const useUserData = create((set) => ({
     //function for logging in an existing user
     checkUser: async(user) =>{
         
-
         if(!user.username || !user.password){
             return {success: false, message: 'Please Provide All Fields.'}
         }
         try{
-            const res = await fetch("http://localhost:5000/api/users/login", {
+            const res = await fetch("http://localhost:5000/api/users/login", { //running the userLogin function that we see in our userRoutes file
                 method: 'POST', //method for the database
                 headers: {
                     'Content-Type': 'application/json'

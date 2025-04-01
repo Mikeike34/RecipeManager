@@ -39,7 +39,7 @@ const LoginPage = () => {
                     navigate("/");
                     toaster.create({
                         title: "Success",
-                        description: "User Registered",
+                        description: "User Verified",
                         type: "success",
                     })
                 }

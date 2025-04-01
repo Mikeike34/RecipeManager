@@ -1,11 +1,21 @@
-import { Container, Flex, HStack, IconButton, Text } from '@chakra-ui/react'
+import { Button, Container, Flex, HStack, IconButton, Text } from '@chakra-ui/react'
 import React from 'react'
 import { IoCreate } from "react-icons/io5";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useCookies } from 'react-cookie';
 
 const Navbar = () => {
-  return (
-    <Container maxW = {"100vw"} px = {0}>
+    const [cookies, setCookies] = useCookies(['access_token']);
+    const navigate = useNavigate();
+
+    const logout = () => {
+        setCookies('access_token', '');
+        window.localStorage.removeItem('userID');
+        navigate('/login');
+    }
+if(location.pathname === '/login' || location.pathname === '/register'){
+    return(
+        <Container maxW = {"100vw"} px = {0}>
         <Flex
             h={16}
             alignItems = {"center"}
@@ -25,19 +35,52 @@ const Navbar = () => {
                 bgClip = {"text"}
                 px = {4}
             >
-                <Link to = {"/"}>Recipe Manager</Link>
+                Recipe Manager
             </Text>
-
-            <HStack spacing = {2} alignItems = {'center'} px = {4}>
-                <Link to = {"/create"}>
-                    <IconButton bgColor = {"#EAE0C8"} rounded = 'full' size= 'lg'>
-                        <IoCreate />
-                    </IconButton>
-                </Link>
-            </HStack>
         </Flex>
     </Container>
-  )
+
+    )
+}else{
+    return (
+        <Container maxW = {"100vw"} px = {0}>
+            <Flex
+                h={16}
+                alignItems = {"center"}
+                justifyContent = {"space-between"}
+                bgColor={"#536878"}
+                flexDir = {
+                    {base: "column",
+                        sm: "row"
+                    }}
+            >
+                <Text
+                    fontSize={{base: "22", sm: "28"}}
+                    fontWeight = {"bold"}
+                    textTransform = {"uppercase"}
+                    textAlign = {"center"}
+                    bgColor = {"#EAE0C8"}
+                    bgClip = {"text"}
+                    px = {4}
+                >
+                    <Link to = {"/"}>Recipe Manager</Link>
+                </Text>
+    
+                <HStack spacing = {2} alignItems = {'center'} px = {4}>
+                    <Link to = {"/create"}>
+                        <IconButton bgColor = {"#EAE0C8"} rounded = 'full' size= 'lg'>
+                            <IoCreate />
+                        </IconButton>
+                    </Link>
+                    {!cookies.access_token ? (<Link to ={"/login"}> {/*checks to see if a user is logged in. If they are not logged in then there is a login button. If they are logged in then it is a log out button*/}
+                    <Button>Login/Register</Button>
+                    </Link>) : (<Button onClick = {logout}>Logout</Button>)}
+                </HStack>
+            </Flex>
+        </Container>
+      )
+
+}
 }
 
 export default Navbar
