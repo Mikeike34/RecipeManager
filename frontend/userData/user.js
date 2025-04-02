@@ -1,6 +1,7 @@
 
 import {create} from 'zustand';
 
+
 //Global state for our functions.
 
 export const useUserData = create((set) => ({

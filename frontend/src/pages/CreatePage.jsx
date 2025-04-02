@@ -1,8 +1,9 @@
 import { useRecipeBook } from '@/recipeBook/recipe';
-import { Box, Button, Container, Heading, HStack, Input, VStack } from '@chakra-ui/react';
+import { Box, Button, Container, Field, Heading, HStack, Input, Textarea, VStack } from '@chakra-ui/react';
 import { Toaster, toaster } from "@/components/ui/toaster";
 import React, { useState } from 'react';
 import { useEffect } from 'react';
+import { useGetUserID } from '../../hooks/useGetUserID';
 
 const CreatePage = () => {
     useEffect(() => {
@@ -12,15 +13,34 @@ const CreatePage = () => {
             };
         }, []);
 
+    const userID = useGetUserID();
+
     const[newRecipe, setNewRecipe] = useState({
         name:"",
         ingredient:[],
         instruction:"",
         image:"",
+        cookingTime: "",
+        userOwner: userID,
      });
 
-    const {createRecipe} = useRecipeBook()
+    
 
+    const {createRecipe} = useRecipeBook();
+
+    //functions to allow us to have multiple ingredients
+    const handleAddIngredient = () => {
+        setNewRecipe({...newRecipe, ingredient:[...newRecipe.ingredient, ""]});
+    };
+
+    const handleIngredientChange = (index, value) => {
+        const updatedIngredient = [...newRecipe.ingredient];
+        updatedIngredient[index] = value;
+        setNewRecipe({...newRecipe, ingredient: updatedIngredient});
+    };
+
+
+    //creates the recipe
     const handleAddRecipe = async () => {
         const {success,message} = await createRecipe(newRecipe);
         if(!success){
@@ -29,16 +49,17 @@ const CreatePage = () => {
                 description: message,
                 type: "error",
             })
-        }else{
-            toaster.create({
+        }
+         toaster.create({
                 title: "Success",
                 description: "Recipe Written",
                 type: "success",
             })
-        }
+        
         console.log("Success: ",success);
         console.log("Message: ", message);
     };
+
 
   return (
     <Container maxW = {"container.sm"} marginTop = {20}>
@@ -47,53 +68,66 @@ const CreatePage = () => {
                 <Heading as ={"h1"} size = {'2xl'} textAlign = {'center'}>
                     Write a Recipe
                 </Heading>
-                <HStack w = "full" spacing = {4}>
                     <VStack spacing = {4}>
-                        
-                        <Input 
+                        <Field.Root orientation ="horizontal">
+                            <Field.Label>Name:</Field.Label>
+                            <Input 
                             placeholder = 'Recipe Name' //placeholder text in the input box
                             name ='name' 
                             value = {newRecipe.name} //the value will be the name in our useState above
                             onChange={(e) => setNewRecipe({...newRecipe, name: e.target.value })} //updating the name value
-                        />
-                        <Input
+                            />
+                        </Field.Root>
+
+                        {newRecipe.ingredient.map((ingredient, index) => (
+                            <Field.Root key={index} orientation="horizontal">
+                                <Field.Label>Ingredient {index + 1}:</Field.Label>
+                                <Input
+                                    placeholder ="Enter Ingredient"
+                                    value = {ingredient}
+                                    onChange={(e) => handleIngredientChange(index, e.target.value)}
+                                />
+                            </Field.Root>
+                        ))}
+                        
+                        <Button onClick={handleAddIngredient}>Add Ingredient</Button>
+                        
+
+                        <Field.Root orientation="horizontal">
+                            <Field.Label>Instructions:</Field.Label>
+                            <Textarea
                             placeholder = 'Instructions' 
                             name ='instruction' 
                             value = {newRecipe.instruction} 
                             onChange={(e) => setNewRecipe({...newRecipe, instruction: e.target.value })} 
-                        />
-                        <Input
+                            />
+                        </Field.Root>
+
+                        <Field.Root orientation = "horizontal" >
+                            <Field.Label>Image URL:</Field.Label>
+                            <Input
                             placeholder = 'Image URL' 
                             name ='image' 
                             value = {newRecipe.image} 
                             onChange={(e) => setNewRecipe({...newRecipe, image: e.target.value })} 
-                        />
+                            />
+                        </Field.Root>
+                        
+                        <Field.Root orientation = "horizontal">
+                            <Field.Label>Cooking Time:</Field.Label>
+                            <Input
+                            placeholder = "Cooking Time (type a number)"
+                            type = "number"
+                            name = "cookingTime"
+                            value = {newRecipe.cookingTime}
+                            onChange={(e) => setNewRecipe({...newRecipe, cookingTime: e.target.value })} 
+                            />
+                        </Field.Root>
+
                         <Button colorScheme = '#EAE0C8' onClick= {handleAddRecipe} w='full' >
                             Create
                         </Button>
                     </VStack>
-                    <VStack>
-                        
-                        <Input
-                            placeholder = 'Add Ingredient' 
-                            name ='ingredient' 
-                            value = {newRecipe.ingredient} 
-                            onChange={(e) => setNewRecipe({...newRecipe, ingredient: e.target.value })} 
-                        />
-                        <Input
-                            placeholder = 'Add Ingredient' 
-                            name ='ingredient' 
-                            value = {newRecipe.ingredient} 
-                            onChange={(e) => setNewRecipe({...newRecipe, ingredient: e.target.value })} 
-                        />
-                        <Input
-                            placeholder = 'Add Ingredient' 
-                            name ='ingredient' 
-                            value = {newRecipe.ingredient} 
-                            onChange={(e) => setNewRecipe({...newRecipe, ingredient: e.target.value })} 
-                        />
-                    </VStack>
-                </HStack>
             </Box>
         </VStack>
         <Toaster />
