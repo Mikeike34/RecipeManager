@@ -14,7 +14,7 @@ const PORT = process.env.PORT;
 app.use(express.json());
 
 app.use("/api/recipes", recipeRoutes); //allows the recipe routes to be prefixed with "/api/recipes"
-app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes); //allows the user routes to be prefixed with "/api/users"
 
 app.listen(PORT, () => { //run with 'npm run dev' in terminal...using nodemon so changes are automatically updated
     connectDB();

@@ -1,10 +1,11 @@
 import Recipe from "../models/recipe.model.js";
 import mongoose from "mongoose";
+import User from "../models/user.model.js";
 
 export const createRecipe = async(req,res) => {
     const recipe = req.body; //user is sending this data
 
-    if(!recipe.name || !recipe.ingredient || !recipe.instruction ||!recipe.image){
+    if(!recipe.name || !recipe.ingredient || !recipe.instruction ||!recipe.image || !recipe.cookingTime || !recipe.userOwner){
         return res.status(400).json({success: false, message: "Please Provide All Fields"});
     }
     const newRecipe = new Recipe(recipe)
@@ -25,6 +26,40 @@ export const getRecipes = async (req,res) => {
     }catch(error){
         console.log("Error in fetching recipes: ", error.message);
         res.status(500).json({success: false, message: "Server Error"});
+    }
+};
+
+export const saveRecipe = async (req, res) => {
+
+    try{
+        const savedRecipe = await Recipe.findById(req.body.recipeID);
+        const user = await User.findById(req.body.userID);
+        user.savedRecipes.push(savedRecipe);
+        await user.save();
+        res.json({success: true, savedRecipes: user.savedRecipes});
+
+    }catch(error){
+        res.json(error);
+    }
+    
+};
+
+export const getSavedRecipeIds = async (req, res) => {
+    try {
+        const user = await User.findById(req.body.userID);
+        res.json({savedRecipes: user?.savedRecipes});
+    } catch (error) {
+        res.json(error);
+    }
+};
+
+export const getSavedRecipes = async(req,res) =>{
+    try {
+        const user = await User.findById(req.body.userID);
+        const savedRecipes = await Recipe.find({_id: {$in: user.savedRecipes},});
+        res.json({savedRecipes: user?.savedRecipes})
+    } catch (error) {
+        res.json(error);
     }
 };
 

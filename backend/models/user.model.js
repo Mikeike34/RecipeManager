@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6,
     },
+    savedRecipes: 
+        [{type: mongoose.Schema.Types.ObjectId, ref: 'recipes'}],
 }, {timestamps: true});
 
 const User = mongoose.model('user', userSchema); //creates the product model
