@@ -64,7 +64,7 @@ const CreatePage = () => {
   return (
     <Container maxW = {"container.sm"} marginTop = {20}>
         <VStack spacing = {8}>
-            <Box w={'full'} bg={'#536878'} p={6} rounded={'lg'} shadow={'md'}>
+            <Box w={'2/3'} bg={'#536878'} p={6} rounded={'lg'} shadow={'md'}>
                 <Heading as ={"h1"} size = {'2xl'} textAlign = {'center'}>
                     Write a Recipe
                 </Heading>

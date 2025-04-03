@@ -27,6 +27,7 @@ const LoginPage = () => {
             const handleUserLogin = async (e) => {
                 e.preventDefault();
                 const result = await checkUser(user);
+                const {success, message} = await checkUser(user);
                 if(!result.success){
                     toaster.create({
                         title: `Error`,
@@ -48,13 +49,13 @@ const LoginPage = () => {
   return (
     <Container maxW = {'container.sm'} marginTop = {20}>
         <VStack spacing = {8}>
-            <Box w ={'full'} bg = {'#536878'} p ={6} rounded = {'lg'} shadow={'md'}>
+            <Box w ={'1/2'} bg = {'#536878'} p ={6} rounded = {'lg'} shadow={'md'}>
                 <Heading as = {'h1'} size ={'3xl'} textAlign ={'center'}  marginBottom = {5}>
                     Login
                 </Heading>
                 <VStack spacing ={4}>
                     <Input 
-                        placeholder = 'username'
+                        placeholder = 'Username'
                         name = 'username'
                         type = 'text'
                         value ={user.username}
