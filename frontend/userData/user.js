@@ -46,7 +46,7 @@ export const useUserData = create((set) => ({
             return {success: false, message: 'Please Provide All Fields.'}
         }
         try{
-            const res = await fetch("http://localhost:5000/api/users/login", { //running the userLogin function that we see in our userRoutes file
+            const res = await fetch("/api/users/login", { //running the userLogin function that we see in our userRoutes file
                 method: 'POST', //method for the database
                 headers: {
                     'Content-Type': 'application/json'

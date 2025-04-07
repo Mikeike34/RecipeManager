@@ -8,7 +8,7 @@ export const useRecipeBook = create((set) => ({
 
     //function for creating a Recipe in the database. 
     createRecipe: async(newRecipe) => {
-        if(!newRecipe.name || !newRecipe.ingredient || !newRecipe.instruction || !newRecipe.image){
+        if(!newRecipe.name || !newRecipe.ingredient || !newRecipe.instruction || !newRecipe.image || !newRecipe.cookingTime || !newRecipe.userOwner){
             return {success: false, message: 'Please Provide All Fields.'}
         }
         const res = await fetch("/api/recipes", {
@@ -23,4 +23,16 @@ export const useRecipeBook = create((set) => ({
         return {success: true, message: 'Recipe Created Successfully.'}
     },
 
+    deleteRecipe: async(pid) => {
+        const res = await fetch(`/api/recipes/${pid}`, {
+            method: 'DELETE',
+        });
+        const data = await res.json();
+        if(!data.success) return {success:false, message: data.message};
+
+        set(state => ({recipes: state.recipes.filter(recipe => recipe._id !== pid)}));
+        return {success:true, message: data.message};
+    }
+
 }));
+
