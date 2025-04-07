@@ -9,19 +9,33 @@ import { Link } from 'react-router-dom';
 
 const HomePage = () => {
 
-  const [recipes, setRecipes] = useState([]);
+        const [recipes, setRecipes] = useState([]);
  
 
         useEffect(() => {
 
           document.body.style.backgroundColor = '#EAE0C8';
+
+          const userID = window.localStorage.getItem('userID'); //retrieves the userID for the user currently logged in. 
+          console.log('Fetching recipes for userID: ', userID);
           
 
           const fetchRecipe = async () => { //in order to have our useEffect be asynchronous, I wrote an async function inside of the useEffect then called that function. 
               try {
-                const response = await axios.get('/api/recipes');
-                setRecipes(response.data.data);
-                console.log(response.data);
+
+                const userID = window.localStorage.getItem('userID'); //retrieves the userID for the user currently logged in. 
+                console.log('Fetching recipes for userID: ', userID);
+
+
+                const response = await axios.get('/api/recipes'); //uses userID as a query parameter when fetching the recipes from the database.
+                console.log('Request URL: ',`/api/recipes?userOwner=${userID}` );
+
+                const filteredRecipes = response.data.data.filter(recipe => recipe.userOwner === userID);
+
+                
+                setRecipes(filteredRecipes);
+                console.log('Filtered Recipes: ', filteredRecipes);
+                
               } catch (error) {
                 console.error(error);
               }
@@ -62,7 +76,7 @@ const HomePage = () => {
         {recipes.length === 0 && (
           <Text fontSize ='xl' textAlign={'center'} fontWeight='bold' color ='gray.500'>
             No Recipes Found {" "}
-            <Link to ={'/CreatePage'}>
+            <Link to ={'/create'}>
               <Text as='span' color ='blue.500' _hover={{textDecoration: 'underline'}}>
                 Create a Recipe
               </Text>
@@ -73,5 +87,7 @@ const HomePage = () => {
     </Container>
   )
 };
+
+
 
 export default HomePage

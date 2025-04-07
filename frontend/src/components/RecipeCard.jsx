@@ -47,7 +47,6 @@ const RecipeCard = ({recipe}) => {
             <Text fontWeight='bold' fontSize ='xl' color={textColor} mb ={4}>
                 {recipe.instruction}
             </Text>
-
             <HStack spacing={2}>
                 <IconButton colorPalette = 'red' onClick={() => handleDeleteRecipe(recipe._id)}><MdDeleteForever /></IconButton>
             </HStack>
