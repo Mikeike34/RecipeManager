@@ -1,5 +1,6 @@
 import RecipeCard from '@/components/recipeCard';
 import { useRecipeBook } from '@/recipeBook/recipe';
+
 import { Container, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import axios from 'axios';
 import React from 'react';
@@ -35,7 +36,7 @@ const HomePage = () => {
                 
                 setRecipes(filteredRecipes);
                 console.log('Filtered Recipes: ', filteredRecipes);
-                
+
               } catch (error) {
                 console.error(error);
               }
@@ -57,6 +58,7 @@ const HomePage = () => {
           fontSize={30}
           fontWeight={'bold'}
           textAlign={'center'}
+          color={'#34495E'}
         >
           Your Recipes
         </Text>
