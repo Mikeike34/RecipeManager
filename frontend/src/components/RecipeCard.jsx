@@ -41,11 +41,14 @@ const RecipeCard = ({recipe}) => {
     >
         <Image src ={recipe.image} alt={recipe.name} h={48} w ='full' objectFit='cover'/>
         <Box  p={4}>
-            <Heading as ='h3' size='md' mb={2}>
+            <Heading as={'h3'} textDecoration='underline' mb={2}>
                 {recipe.name}
             </Heading>
             <Text fontSize ='xl' color={'#EAE0C8'} mb ={4}>
                 {recipe.instruction}
+            </Text>
+            <Text fontsize ='md' mb={4}>
+                Cooking Time: {recipe.cookingTime} Minutes
             </Text>
             <HStack spacing={2}>
                 <IconButton position='relative' bottom={0} colorPalette = 'red' onClick={() => handleDeleteRecipe(recipe._id)}><MdDeleteForever /></IconButton>
