@@ -49,13 +49,13 @@ const CreatePage = () => {
                 description: message,
                 type: "error",
             })
-        }
-         toaster.create({
+        }else{
+            toaster.create({
                 title: "Success",
                 description: "Recipe Written",
                 type: "success",
             })
-        
+        }
         console.log("Success: ",success);
         console.log("Message: ", message);
     };
@@ -90,7 +90,14 @@ const CreatePage = () => {
                             </Field.Root>
                         ))}
                         
-                        <Button onClick={handleAddIngredient}>Add Ingredient</Button>
+                        <Button 
+                            onClick={handleAddIngredient}  
+                            rounded='lg' 
+                            bg={'#EAE0C8'} 
+                            _hover ={{transform: 'translateY(0px)', shadow: 'md'}}
+                        >
+                            Add Ingredient
+                        </Button>
                         
 
                         <Field.Root orientation="horizontal">
@@ -124,7 +131,14 @@ const CreatePage = () => {
                             />
                         </Field.Root>
 
-                        <Button colorScheme = '#EAE0C8' onClick= {handleAddRecipe} w='full' >
+                        <Button 
+                            onClick= {handleAddRecipe} 
+                            w='full'  
+                            rounded='lg' 
+                            bg={'#EAE0C8'} 
+                            shadow ='sm'
+                            _hover ={{transform: 'translateY(0px)', shadow: 'md'}}
+                        >
                             Create
                         </Button>
                     </VStack>

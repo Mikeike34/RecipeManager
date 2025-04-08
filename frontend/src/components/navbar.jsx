@@ -68,13 +68,13 @@ if(location.pathname === '/login' || location.pathname === '/register'){
     
                 <HStack spacing = {2} alignItems = {'center'} px = {4}>
                     <Link to = {"/create"}>
-                        <IconButton bgColor = {"#EAE0C8"} rounded = 'full' size= 'lg'>
+                        <IconButton bgColor = {"#EAE0C8"} rounded = 'full' size= 'lg' _hover ={{transform: 'translateY(0px)', shadow: 'md'}}>
                             <IoCreate />
                         </IconButton>
                     </Link>
                     {!cookies.access_token ? (<Link to ={"/login"}> {/*checks to see if a user is logged in. If they are not logged in then there is a login button. If they are logged in then it is a log out button*/}
-                    <Button>Login/Register</Button>
-                    </Link>) : (<Button onClick = {logout}>Logout</Button>)}
+                    <Button rounded='lg' bg={'#EAE0C8'} _hover ={{transform: 'translateY(0px)', shadow: 'md'}}>Login/Register</Button>
+                    </Link>) : (<Button onClick = {logout} rounded='lg' bg={'#EAE0C8'} _hover ={{transform: 'translateY(0px)', shadow: 'md'}}>Logout</Button>)}
                 </HStack>
             </Flex>
         </Container>

@@ -69,14 +69,21 @@ const RegisterPage = () => {
                         <p>Already have an account? Login</p>
                         <HStack justify ={'center'}>
                             <Button 
-                                colorScheme = '#EAE0C8' 
+                                rounded='lg' 
+                                bg={'#EAE0C8'} 
+                                shadow ='md'
+                                _hover ={{transform: 'translateY(0px)', shadow: 'lg'}}
                                 onClick = {handleRegisterUser}  
                                 w = 'full'
                                 >
                                 Register
                             </Button>
-                            <Button colorScheme = '#EAE0C8'
-                            w= 'full'
+                            <Button 
+                                rounded='lg' 
+                                bg={'#EAE0C8'}
+                                shadow ='md'
+                                _hover ={{transform: 'translateY(0px)', shadow: 'lg'}}
+                                w= 'full'
                             >
                                 <Link to ={'/login'}>
                                 Login
