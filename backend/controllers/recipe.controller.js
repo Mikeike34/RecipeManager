@@ -89,3 +89,23 @@ export const deleteRecipe = async(req,res) => {
         res.status(404).json({success:false, message: "Recipe not found"});
     }
 };
+
+export const getSimilarRecipes = async(req,res) => {
+    const {ingredients, userOwner} = req.body;
+
+    if(!Array.isArray(ingredients) || !userOwner){
+        return res.status(400).json({success:false, message: 'Invalid data'});
+    }
+
+    try{
+        const similarRecipes = await Recipe.find({
+            ingredient: {$in: ingredients},
+            userOwner: {$ne: userOwner},
+        });
+
+        res.status(200).json({success: true, data: similarRecipes});
+    }catch(error){
+        console.error("Error fetching similar recipes: ", error.message);
+        res.status(500).json({success:false, message: 'Server Error'});
+    };
+}

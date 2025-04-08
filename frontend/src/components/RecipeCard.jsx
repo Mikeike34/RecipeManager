@@ -2,8 +2,10 @@ import React from 'react'
 import { MdDeleteForever } from "react-icons/md";
 import { useColorModeValue } from './ui/color-mode';
 import { useRecipeBook } from '@/recipeBook/recipe';
-import { Box, Heading, HStack, IconButton, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Heading, HStack, IconButton, Image, Text } from '@chakra-ui/react';
 import { Toaster, toaster } from "@/components/ui/toaster";
+
+import {CloseButton, Dialog, Portal } from "@chakra-ui/react"
 
 const RecipeCard = ({recipe}) => {
 
@@ -36,7 +38,7 @@ const RecipeCard = ({recipe}) => {
         rounded = 'lg'
         overflow = 'hidden'
         transition = 'all 0.3s'
-        _hover ={{transform: 'translateY(-5px)', shadow: 'xl'}}
+        _hover ={{transform: 'translateY(-2px)', shadow: 'xl'}}
         bg={'#536878'}
     >
         <Image src ={recipe.image} alt={recipe.name} h={48} w ='full' objectFit='cover'/>
@@ -44,9 +46,6 @@ const RecipeCard = ({recipe}) => {
             <Heading as={'h3'} textDecoration='underline' mb={2}>
                 {recipe.name}
             </Heading>
-            <Text fontSize ='xl' color={'#EAE0C8'} mb ={4}>
-                {recipe.instruction}
-            </Text>
             <Text fontsize ='md' mb={4}>
                 Cooking Time: {recipe.cookingTime} Minutes
             </Text>
