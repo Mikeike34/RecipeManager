@@ -5,12 +5,8 @@ import { useRecipeBook } from '@/recipeBook/recipe';
 import { Box, Button, Heading, HStack, IconButton, Image, Text } from '@chakra-ui/react';
 import { Toaster, toaster } from "@/components/ui/toaster";
 
-import {CloseButton, Dialog, Portal } from "@chakra-ui/react"
 
 const RecipeCard = ({recipe}) => {
-
-    const textColor = useColorModeValue('#EAE0C8');
-    const bg = useColorModeValue('#536878');
 
     const{deleteRecipe} = useRecipeBook();
 
@@ -43,15 +39,12 @@ const RecipeCard = ({recipe}) => {
     >
         <Image src ={recipe.image} alt={recipe.name} h={48} w ='full' objectFit='cover'/>
         <Box  p={4}>
-            <Heading as={'h3'} textDecoration='underline' mb={2}>
+            <Heading as={'h3'} textDecoration='underline' color='white' mb={2}>
                 {recipe.name}
             </Heading>
-            <Text fontsize ='md' mb={4}>
+            <Text fontsize ='md' color= 'white' mb={4}>
                 Cooking Time: {recipe.cookingTime} Minutes
             </Text>
-            <HStack spacing={2}>
-                <IconButton position='relative' bottom={0} colorPalette = 'red' onClick={() => handleDeleteRecipe(recipe._id)}><MdDeleteForever /></IconButton>
-            </HStack>
         </Box>
         <Toaster shadow='none' />
     </Box>

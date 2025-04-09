@@ -1,10 +1,12 @@
 import RecipeCard from '@/components/recipeCard';
-import { Container, SimpleGrid, Text, VStack, CloseButton, Dialog, Portal, Button } from '@chakra-ui/react';
+import { Container, SimpleGrid, Text, VStack, CloseButton, Dialog, Portal, Button, HStack, IconButton } from '@chakra-ui/react';
 import axios from 'axios';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { MdDeleteForever } from "react-icons/md";
+import { useRecipeBook } from '@/recipeBook/recipe';
 
 
 
@@ -66,6 +68,26 @@ const HomePage = () => {
             setLoadingSimilar(false);
           }
         }
+
+        const{deleteRecipe} = useRecipeBook();
+        
+            const handleDeleteRecipe = async(pid) => {
+                const {success, message} = await deleteRecipe(pid)
+                if(!success){
+                    toaster.create({
+                        title: 'Error',
+                        description: message,
+                        type: 'error',
+                    })
+                }else{
+                    toaster.create({
+                        title:'Success',
+                        description: "Recipe was deleted.",
+                        type: 'success',
+                        
+                    })
+                }
+            };
 
         
 
@@ -142,6 +164,8 @@ const HomePage = () => {
                         />
                       )}
 
+                        {/*Beginning of dialog component that shows recommended recipes based on the recipe selected*/}
+                      <HStack spacing={2}>
                         <Dialog.Root size="cover" placement="center" motionPreset="slide-in-bottom">
                               <Dialog.Trigger asChild>
                               <Button 
@@ -168,14 +192,15 @@ const HomePage = () => {
                                     overFlow='hidden'
                                   >
                                     <Dialog.Header>
-                                      <Dialog.Title>Recommended Recipes</Dialog.Title>
+                                      <Dialog.Title>Recommended Recipes:</Dialog.Title>
                                       <Dialog.CloseTrigger asChild>
                                         <CloseButton size="sm" bg='#536878' _hover ={{transform: 'translateY(0px)', shadow: 'md'}}/>
                                       </Dialog.CloseTrigger>
                                     </Dialog.Header>
                                     <Dialog.Body
                                       p={6}
-                                      overFlow='hidden'
+                                      overflowY = 'auto'
+                                      maxH='60vh'
                                     >
                                       {loadingSimilar ? (
                                         <Text>Loading Similar Recipes...</Text>
@@ -184,15 +209,82 @@ const HomePage = () => {
                                       ) : (
                                         <SimpleGrid columns={{base: 1, md: 2, lg: 3}} p={6} spacing={4}>
                                           {similarRecipes.map((similarRecipe) =>(
-                                            <RecipeCard key = {similarRecipes._id} recipe={similarRecipe} />
+
+                                            //Dialog component for viewing a recommended recipe's information
+                                            <Dialog.Root key={recipe._id}>
+                                              <Dialog.Trigger asChild>
+                                                <div style={{ cursor: 'pointer' }}>
+                                                  <RecipeCard key = {similarRecipes._id} recipe={similarRecipe} />
+                                                </div>
+                                              </Dialog.Trigger>
+                                            <Portal>
+                                              <Dialog.Backdrop bg="blackAlpha.600" backdropFilter="blur(4px)" />
+                                              <Dialog.Positioner>
+                                                <Dialog.Content
+                                                  bg="#EAE0C8"
+                                                  color='#536878'
+                                                  borderRadius="lg"
+                                                  boxShadow="lg"
+                                                  maxW="lg"
+                                                  w="full"
+                                                  p={6}
+                                                >
+                                                  <Dialog.Header>
+                                                    <Text fontSize="xl" fontWeight="bold">
+                                                      {similarRecipe.name}
+                                                    </Text>
+                                                    <Dialog.CloseTrigger asChild>
+                                                      <CloseButton size="sm" bg='#536878' _hover ={{transform: 'translateY(0px)', shadow: 'md'}}/>
+                                                    </Dialog.CloseTrigger>
+                                                  </Dialog.Header>
+                                                  <Dialog.Body>
+                                                    <Text fontWeight="bold" mb={2}>Ingredients:</Text>
+                                                    <ul>
+                                                      {similarRecipe.ingredient.map((ing, index) => (
+                                                        <li key={index}>{ing}</li>
+                                                      ))}
+                                                    </ul>
+                                                    <Text mt={4} fontWeight="bold">Instructions:</Text>
+                                                    <Text>{similarRecipe.instruction}</Text>
+                                                    <Text mt={4}>
+                                                      <strong>Cooking Time:</strong> {similarRecipe.cookingTime} minutes
+                                                    </Text>
+
+                                                    {similarRecipe.image && (
+                                                      <img
+                                                        src={similarRecipe.image}
+                                                        alt={similarRecipe.name}
+                                                        style={{
+                                                          width: '100%',
+                                                          marginTop: '1rem',
+                                                          borderRadius: '10px',
+                                                        }}
+                                                      />
+                                                    )}
+                                                  </Dialog.Body>
+                                                </Dialog.Content>
+                                              </Dialog.Positioner>
+                                            </Portal>
+                                            </Dialog.Root>
                                           ))}
                                         </SimpleGrid>
                                       )}
+
                                     </Dialog.Body>
                                   </Dialog.Content>
                                 </Dialog.Positioner>
                               </Portal>
                             </Dialog.Root>
+                            <IconButton 
+                              position='relative' 
+                              bottom={-2} 
+                              colorPalette = 'red'  
+                              _hover ={{transform: 'translateY(0px)', shadow: 'md'}}
+                              onClick={() => handleDeleteRecipe(recipe._id)}
+                            >
+                              <MdDeleteForever />
+                            </IconButton>
+                          </HStack>
 
                     </Dialog.Body>
                   </Dialog.Content>
