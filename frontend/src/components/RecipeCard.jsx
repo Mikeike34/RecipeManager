@@ -36,6 +36,8 @@ const RecipeCard = ({recipe}) => {
         transition = 'all 0.3s'
         _hover ={{transform: 'translateY(-2px)', shadow: 'xl'}}
         bg={'#536878'}
+        mb={4}
+        
     >
         <Image src ={recipe.image} alt={recipe.name} h={48} w ='full' objectFit='cover'/>
         <Box  p={4}>

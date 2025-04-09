@@ -4,6 +4,7 @@ import { Toaster, toaster } from "@/components/ui/toaster";
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { useGetUserID } from '../../hooks/useGetUserID';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePage = () => {
     useEffect(() => {
@@ -41,6 +42,8 @@ const CreatePage = () => {
 
 
     //creates the recipe
+    const navigate = useNavigate();
+
     const handleAddRecipe = async () => {
         const {success,message} = await createRecipe(newRecipe);
         if(!success){
@@ -55,7 +58,10 @@ const CreatePage = () => {
                 description: "Recipe Written",
                 type: "success",
             })
+
+            setTimeout(()=> navigate('/'), 1500);
         }
+
         console.log("Success: ",success);
         console.log("Message: ", message);
     };
@@ -123,7 +129,7 @@ const CreatePage = () => {
                         <Field.Root orientation = "horizontal">
                             <Field.Label>Cooking Time:</Field.Label>
                             <Input
-                            placeholder = "Cooking Time (type a number)"
+                            placeholder = "Cooking Time (In Minutes)"
                             type = "number"
                             name = "cookingTime"
                             value = {newRecipe.cookingTime}

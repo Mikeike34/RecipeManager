@@ -1,5 +1,5 @@
 import RecipeCard from '@/components/recipeCard';
-import { Container, SimpleGrid, Text, VStack, CloseButton, Dialog, Portal, Button, HStack, IconButton } from '@chakra-ui/react';
+import { Container, SimpleGrid, Text, VStack, CloseButton, Dialog, Portal, Button, HStack, IconButton, Toaster } from '@chakra-ui/react';
 import axios from 'axios';
 import React from 'react';
 import { useEffect } from 'react';
@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MdDeleteForever } from "react-icons/md";
 import { useRecipeBook } from '@/recipeBook/recipe';
+import { toaster } from '@/components/ui/toaster';
 
 
 
@@ -85,9 +86,12 @@ const HomePage = () => {
                         description: "Recipe was deleted.",
                         type: 'success',
                         
-                    })
+                    });
+                    
+                    setRecipes(prev => prev.filter(recipe => recipe._id !== pid)); //once recipe is deleted, it will filter it out of the recipes displayed.
                 }
             };
+            
 
         
 
@@ -207,7 +211,7 @@ const HomePage = () => {
                                       ) : similarRecipes.length === 0 ?(
                                         <Text>No Similar Recipes Found.</Text>
                                       ) : (
-                                        <SimpleGrid columns={{base: 1, md: 2, lg: 3}} p={6} spacing={4}>
+                                        <SimpleGrid columns={{base: 1, md: 2, lg: 3}} gap={6}>
                                           {similarRecipes.map((similarRecipe) =>(
 
                                             //Dialog component for viewing a recommended recipe's information
@@ -267,6 +271,7 @@ const HomePage = () => {
                                             </Portal>
                                             </Dialog.Root>
                                           ))}
+                                          <Toaster />
                                         </SimpleGrid>
                                       )}
 
