@@ -1,5 +1,6 @@
 import RecipeCard from '@/components/recipeCard';
-import { Container, SimpleGrid, Text, VStack, CloseButton, Dialog, Portal, Button, HStack, IconButton, Toaster } from '@chakra-ui/react';
+import { Toaster, toaster } from "@/components/ui/toaster";
+import { Container, SimpleGrid, Text, VStack, CloseButton, Dialog, Portal, Button, HStack, IconButton } from '@chakra-ui/react';
 import axios from 'axios';
 import React from 'react';
 import { useEffect } from 'react';
@@ -7,7 +8,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MdDeleteForever } from "react-icons/md";
 import { useRecipeBook } from '@/recipeBook/recipe';
-import { toaster } from '@/components/ui/toaster';
 
 
 
@@ -86,12 +86,11 @@ const HomePage = () => {
                         description: "Recipe was deleted.",
                         type: 'success',
                         
-                    });
-                    
-                    setRecipes(prev => prev.filter(recipe => recipe._id !== pid)); //once recipe is deleted, it will filter it out of the recipes displayed.
+                    })
+
+                    setRecipes(prev => prev.filter(recipe => recipe._id !== pid));
                 }
             };
-            
 
         
 
@@ -271,7 +270,6 @@ const HomePage = () => {
                                             </Portal>
                                             </Dialog.Root>
                                           ))}
-                                          <Toaster />
                                         </SimpleGrid>
                                       )}
 
@@ -297,6 +295,7 @@ const HomePage = () => {
               </Portal>
             </Dialog.Root>
           ))}
+          
         </SimpleGrid>
         {recipes.length === 0 && (
           <Text fontSize ='xl' textAlign={'center'} fontWeight='bold' color ='gray.500'>
@@ -309,6 +308,7 @@ const HomePage = () => {
           </Text>
         )}
       </VStack>
+      <Toaster />
     </Container>
   )
 };

@@ -42,8 +42,6 @@ const CreatePage = () => {
 
 
     //creates the recipe
-    const navigate = useNavigate();
-
     const handleAddRecipe = async () => {
         const {success,message} = await createRecipe(newRecipe);
         if(!success){
@@ -59,12 +57,13 @@ const CreatePage = () => {
                 type: "success",
             })
 
-            setTimeout(()=> navigate('/'), 1500);
+            setTimeout(() => navigate('/'), 1000);
         }
-
         console.log("Success: ",success);
         console.log("Message: ", message);
     };
+
+    const navigate = useNavigate();
 
 
   return (
@@ -129,7 +128,7 @@ const CreatePage = () => {
                         <Field.Root orientation = "horizontal">
                             <Field.Label>Cooking Time:</Field.Label>
                             <Input
-                            placeholder = "Cooking Time (In Minutes)"
+                            placeholder = "Cooking Time (type a number)"
                             type = "number"
                             name = "cookingTime"
                             value = {newRecipe.cookingTime}
