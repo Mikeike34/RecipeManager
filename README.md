@@ -161,7 +161,7 @@ Project Link: https://github.com/Mikeike34/RecipeManager
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-Connect-blue
-[linkedin-url]: [https://linkedin.com/in/othneildrew](https://www.linkedin.com/in/michael-cantone/)
+[linkedin-url]: https://www.linkedin.com/in/michael-cantone/
 
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
