@@ -5,7 +5,7 @@ import axios from 'axios';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { MdDeleteForever } from "react-icons/md";
 import { useRecipeBook } from '@/recipeBook/recipe';
 
@@ -17,6 +17,12 @@ const HomePage = () => {
 
         const[similarRecipes, setSimilarRecipes] = useState([]);
         const[loadingSimilar, setLoadingSimilar] = useState(false);
+
+        const location = useLocation();
+        const[filteredRecipes, setFilteredRecipes] = useState(recipes);
+
+        const queryParams = new URLSearchParams(location.search);
+        const searchQuery = queryParams.get('search')?.toLowerCase() || '';
 
         useEffect(() => {
 
@@ -36,17 +42,16 @@ const HomePage = () => {
                 const response = await axios.get('/api/recipes'); //uses userID as a query parameter when fetching the recipes from the database.
                 console.log('Request URL: ',`/api/recipes?userOwner=${userID}` );
 
-                const filteredRecipes = response.data.data.filter(recipe => recipe.userOwner === userID);
+                const userRecipes = response.data.data.filter(recipe => recipe.userOwner === userID);
 
                 
-                setRecipes(filteredRecipes);
-                console.log('Filtered Recipes: ', filteredRecipes);
+                setRecipes(userRecipes);
+                console.log('Filtered Recipes: ', userRecipes);
 
               } catch (error) {
                 console.error(error);
               }
-          }
-
+          };
           fetchRecipe();
 
           return () => {
@@ -54,6 +59,29 @@ const HomePage = () => {
         };
 
         }, []);
+
+        const linearSearchRecipes = (recipes , query) => {  //linear search algorithm for homepage search function.
+          const lowerQuery = query.toLowerCase();
+            const results = [];
+            
+            for( let i = 0; i < recipes.length; i++){
+              const recipeName = recipes[i].name.toLowerCase();
+              if(recipeName.includes(lowerQuery)){
+                  results.push(recipes[i]);
+              }
+            }
+      
+            return results;
+      }
+
+        useEffect(()=>{
+          if(searchQuery === ''){
+            setFilteredRecipes(recipes);
+          }else{
+            const results = linearSearchRecipes(recipes, searchQuery); //using the results from the linear search algorithm
+            setFilteredRecipes(results);
+          }
+        }, [searchQuery, recipes]);
 
         const fetchSimilarRecipes = async (recipe) => {
           try{
@@ -92,6 +120,7 @@ const HomePage = () => {
                 }
             };
 
+
         
 
        
@@ -115,7 +144,7 @@ const HomePage = () => {
           gap='30px'
           w={'full'}
         >
-          {recipes.map((recipe) => (
+          {filteredRecipes.map((recipe) => (
             <Dialog.Root key={recipe._id}>
               <Dialog.Trigger asChild>
                 <div style={{ cursor: 'pointer' }}>
@@ -297,7 +326,7 @@ const HomePage = () => {
           ))}
           
         </SimpleGrid>
-        {recipes.length === 0 && (
+        {recipes.length === 0 && ( //if the user simply does not have any recipes created, this will display.
           <Text fontSize ='xl' textAlign={'center'} fontWeight='bold' color ='gray.500'>
             No Recipes Found {" "}
             <Link to ={'/create'}>
@@ -306,6 +335,15 @@ const HomePage = () => {
               </Text>
             </Link>
           </Text>
+        )}
+        {filteredRecipes.length === 0 && ( //if our search results return nothing, this will display.
+          <Text fontSize ='xl' textAlign={'center'} fontWeight='bold' color ='gray.500'>
+            The recipe searched for was not found... 
+            <Link to={'/'}>
+            <Button color = {'#EAE0C8'} rounded='lg' bg={"#536878"} _hover ={{transform: 'translateY(0px)', shadow: 'md'}}>Clear Search</Button>
+          </Link>
+          </Text>
+          
         )}
       </VStack>
       <Toaster />
