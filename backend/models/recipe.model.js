@@ -26,6 +26,10 @@ const recipeSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, //the object ID of the user
         ref: 'users', //references the users collection in MongoDB
         required: true
+    },
+    category: {
+        type: String,
+        required: true
     }
 }, {timestamps: true});
 

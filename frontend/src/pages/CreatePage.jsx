@@ -1,5 +1,5 @@
 import { useRecipeBook } from '@/recipeBook/recipe';
-import { Box, Button, Container, Field, Heading, HStack, Input, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Button, Container, Field, Heading, HStack, Input, Textarea, VStack, Portal, Select, createListCollection, Flex } from '@chakra-ui/react';
 import { Toaster, toaster } from "@/components/ui/toaster";
 import React, { useState } from 'react';
 import { useEffect } from 'react';
@@ -65,6 +65,17 @@ const CreatePage = () => {
 
     const navigate = useNavigate();
 
+
+    const categories = createListCollection({ //Recipe categories
+        items: [
+          { label: "Breakfast", value: "breakfast" },
+          { label: "Lunch", value: "lunch" },
+          { label: "Dinner", value: "dinner" },
+          { label: "Appetizer", value: "appetizer" },
+          { label: "Dessert", value: "dessert" },
+          { label: "Drink", value: "drink" },
+        ],
+      })
 
   return (
     <Container maxW = {"container.sm"} marginTop = {20}>
@@ -136,6 +147,36 @@ const CreatePage = () => {
                             />
                         </Field.Root>
 
+                        <Field.Root>
+                            <Select.Root collection={categories} size="sm" flex = '1'>
+                                <Flex align = 'center' gap ={2} width = '320px'>
+                                    <Select.Label whiteSpace='nowrap' mr={4}>Category:</Select.Label>
+                                    <Select.HiddenSelect />
+                                    <Select.Control flex='2' size ='sm'>
+                                        <Select.Trigger>
+                                            <Select.ValueText placeholder="Select category" />
+                                        </Select.Trigger>
+                                        <Select.IndicatorGroup>
+                                            <Select.Indicator />
+                                        </Select.IndicatorGroup>
+                                    </Select.Control>
+                                </Flex>
+                                <Portal>
+                                <Select.Positioner>
+                                    <Select.Content>
+                                        {categories.items.map((category) => (
+                                            <Select.Item item={category} key={category.value}>
+                                            {category.label}
+                                            <Select.ItemIndicator />
+                                            </Select.Item>
+                                        ))}
+                                    </Select.Content>
+                                </Select.Positioner>
+                                </Portal>
+                            </Select.Root>
+                            <Field.ErrorText>This is an error</Field.ErrorText>
+                        </Field.Root>
+    
                         <Button 
                             onClick= {handleAddRecipe} 
                             w='full'  
@@ -153,5 +194,7 @@ const CreatePage = () => {
     </Container>
   )
 };
+
+
 
 export default CreatePage

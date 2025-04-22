@@ -14,19 +14,6 @@ const Navbar = () => {
         navigate('/login');
     }
 
-    const linearSearchRecipes = (recipes , query) => {  //linear search algorithm for homepage search function.
-        const lowerQuery = query.toLowerCase();
-          const results = [];
-          
-          for( let i = 0; i < recipes.length; i++){
-            const recipeName = recipes[i].name.toLowerCase();
-            if(recipeName.includes(lowerQuery)){
-                results.push(recipes[i]);
-            }
-          }
-    
-          return results;
-    }
 
     const [searchInput, setSearchInput] = useState('');
 

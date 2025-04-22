@@ -65,7 +65,7 @@ const HomePage = () => {
 
         const linearSearchRecipes = (recipes , query) => {  //linear search algorithm for homepage search function.
           const lowerQuery = query.toLowerCase();
-            const results = [];
+          const results = [];
             
             for( let i = 0; i < recipes.length; i++){
               const recipeName = recipes[i].name.toLowerCase();
