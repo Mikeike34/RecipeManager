@@ -5,7 +5,7 @@ import User from "../models/user.model.js";
 export const createRecipe = async(req,res) => {
     const recipe = req.body; //user is sending this data
 
-    if(!recipe.name || !recipe.ingredient || !recipe.instruction ||!recipe.image || !recipe.cookingTime || !recipe.userOwner){
+    if(!recipe.name || !recipe.ingredient || !recipe.instruction ||!recipe.image || !recipe.cookingTime || !recipe.userOwner || !recipe.category){
         return res.status(400).json({success: false, message: "Please Provide All Fields"});
     }
     const newRecipe = new Recipe(recipe)
@@ -109,17 +109,3 @@ export const getSimilarRecipes = async(req,res) => {
         res.status(500).json({success:false, message: 'Server Error'});
     };
 };
-
-export const linearSearchRecipes = (recipes , query) => {  //linear search algorithm for homepage search function.
-    const lowerQuery = query.toLowerCase();
-      const results = [];
-      
-      for( let i = 0; i < recipes.length; i++){
-        const recipeName = recipes[i].name.toLowerCase();
-        if(recipeName.includes(lowerQuery)){
-            results.push(recipes[i]);
-        }
-      }
-
-      return results;
-}

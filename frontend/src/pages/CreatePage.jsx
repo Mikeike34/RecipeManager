@@ -22,6 +22,7 @@ const CreatePage = () => {
         instruction:"",
         image:"",
         cookingTime: "",
+        category: "",
         userOwner: userID,
      });
 
@@ -61,6 +62,7 @@ const CreatePage = () => {
         }
         console.log("Success: ",success);
         console.log("Message: ", message);
+        console.log(newRecipe);
     };
 
     const navigate = useNavigate();
@@ -148,7 +150,15 @@ const CreatePage = () => {
                         </Field.Root>
 
                         <Field.Root>
-                            <Select.Root collection={categories} size="sm" flex = '1'>
+                            <Select.Root collection={categories} size="sm" flex = '1' onValueChange={(valueobj) => {
+                                if(typeof valueobj === 'string'){
+                                    setNewRecipe({ ...newRecipe, category: valueobj });
+                                }else if(Array.isArray(valueobj?.value)){
+                                    setNewRecipe({ ... newRecipe, category: valueobj.value[0]});
+                                }else if(typeof valueobj?.value === 'string'){
+                                    setNewRecipe({ ...newRecipe, category: valueobj.value });
+                                }
+                            }}>
                                 <Flex align = 'center' gap ={2} width = '320px'>
                                     <Select.Label whiteSpace='nowrap' mr={4}>Category:</Select.Label>
                                     <Select.HiddenSelect />
@@ -163,9 +173,9 @@ const CreatePage = () => {
                                 </Flex>
                                 <Portal>
                                 <Select.Positioner>
-                                    <Select.Content>
+                                    <Select.Content >
                                         {categories.items.map((category) => (
-                                            <Select.Item item={category} key={category.value}>
+                                            <Select.Item item={category} key={category.value} >
                                             {category.label}
                                             <Select.ItemIndicator />
                                             </Select.Item>
