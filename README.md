@@ -140,7 +140,8 @@ To get a local copy up and running follow these simple example steps.
 - [x] Add user authentication
 - [x] Minimalize the recipe cards
 - [x] Add recipe suggestions
-- [ ] Add edit recipe function
+- [x] Incorporate a search function
+- [ ] Include an edit recipe function
 - [ ] Add a place for user notes
 - [ ] Add a share function
 
