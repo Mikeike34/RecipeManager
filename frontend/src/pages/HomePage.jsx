@@ -11,7 +11,11 @@ import { useRecipeBook } from '@/recipeBook/recipe';
 
 
 
+
 const HomePage = () => {
+
+        const userID = window.localStorage.getItem('userID'); //retrieves the userID for the user currently logged in. 
+        const [isLoggedIn, setIsLoggedIn] = useState(!!userID);
 
         const [recipes, setRecipes] = useState([]); //used to populate the homepage with recipeCards.
 
@@ -25,11 +29,10 @@ const HomePage = () => {
         const searchQuery = queryParams.get('search')?.toLowerCase() || '';
 
         useEffect(() => {
-
+          const userID = window.localStorage.getItem('userID'); //retrieves the userID for the user currently logged in. 
           document.body.style.backgroundColor = '#EAE0C8';
 
-          const userID = window.localStorage.getItem('userID'); //retrieves the userID for the user currently logged in. 
-          console.log('Fetching recipes for userID: ', userID);
+          
           
 
           const fetchRecipe = async () => { //in order to have our useEffect be asynchronous, I wrote an async function inside of the useEffect then called that function. 
@@ -119,9 +122,6 @@ const HomePage = () => {
                     setRecipes(prev => prev.filter(recipe => recipe._id !== pid));
                 }
             };
-
-
-        
 
        
   return (
@@ -326,7 +326,7 @@ const HomePage = () => {
           ))}
           
         </SimpleGrid>
-        {recipes.length === 0 && ( //if the user simply does not have any recipes created, this will display.
+        {recipes.length === 0 && isLoggedIn &&( //if the user simply does not have any recipes created, this will display.
           <Text fontSize ='xl' textAlign={'center'} fontWeight='bold' color ='gray.500'>
             No Recipes Found {" "}
             <Link to ={'/create'}>
@@ -336,14 +336,19 @@ const HomePage = () => {
             </Link>
           </Text>
         )}
-        {filteredRecipes.length === 0 && ( //if our search results return nothing, this will display.
+        {filteredRecipes.length === 0 && recipes.length > 0 && ( //if our search results return nothing, this will display.
           <Text fontSize ='xl' textAlign={'center'} fontWeight='bold' color ='gray.500'>
-            The recipe searched for was not found... 
+            Your Search Was Not Found... <br></br>
             <Link to={'/'}>
             <Button color = {'#EAE0C8'} rounded='lg' bg={"#536878"} _hover ={{transform: 'translateY(0px)', shadow: 'md'}}>Clear Search</Button>
           </Link>
           </Text>
           
+        )}
+        {!isLoggedIn && (
+          <Text fontSize ='xl' textAlign={'center'} fontWeight='bold' color ='gray.500'>
+            Please <Link to={'/login'}><Text as ='span' color = 'blue.500' _hover={{textDecoration: 'underline'}}>Login</Text></Link> To view your recipes
+          </Text>
         )}
       </VStack>
       <Toaster />
