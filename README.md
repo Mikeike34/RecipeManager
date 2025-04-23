@@ -142,6 +142,8 @@ To get a local copy up and running follow these simple example steps.
 - [x] Add recipe suggestions
 - [x] Incorporate a search function
 - [ ] Include an edit recipe function
+- [x] Add recipe categories
+- [x] Incorporate a recommendation feature
 - [ ] Add a place for user notes
 - [ ] Add a share function
 
