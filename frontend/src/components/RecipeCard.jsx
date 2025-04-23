@@ -33,7 +33,7 @@ const RecipeCard = ({recipe}) => {
         shadow = 'lg'
         rounded = 'lg'
         overflow = 'hidden'
-        transition = 'all 0.3s'
+        transition = 'all 0.05s'
         _hover ={{transform: 'translateY(-2px)', shadow: 'xl'}}
         bg={'#536878'}
         mb={4}
