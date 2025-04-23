@@ -1,6 +1,6 @@
 import RecipeCard from '@/components/recipeCard';
 import { Toaster, toaster } from "@/components/ui/toaster";
-import { Container, SimpleGrid, Text, VStack, CloseButton, Dialog, Portal, Button, HStack, IconButton } from '@chakra-ui/react';
+import { Container, SimpleGrid, Text, VStack, CloseButton, Dialog, Portal, Button, HStack, IconButton, Drawer, For } from '@chakra-ui/react';
 import axios from 'axios';
 import React from 'react';
 import { useEffect } from 'react';
@@ -28,13 +28,17 @@ const HomePage = () => {
         const queryParams = new URLSearchParams(location.search);
         const searchQuery = queryParams.get('search')?.toLowerCase() || '';
 
+        const [favoriteCategory, setFavoriteCategory] = useState('');
+        const [userRecipes, setUserRecipes] = useState([]);
+
+        const [loadingCategory, setLoadingCategory] = useState(true);
+        const [recommendedRecipes, setRecommendedRecipes] = useState([]);
+
+        
+
         useEffect(() => {
-          const userID = window.localStorage.getItem('userID'); //retrieves the userID for the user currently logged in. 
           document.body.style.backgroundColor = '#EAE0C8';
-
           
-          
-
           const fetchRecipe = async () => { //in order to have our useEffect be asynchronous, I wrote an async function inside of the useEffect then called that function. 
               try {
 
@@ -42,19 +46,37 @@ const HomePage = () => {
                 console.log('Fetching recipes for userID: ', userID);
 
 
-                const response = await axios.get('/api/recipes'); //uses userID as a query parameter when fetching the recipes from the database.
+                const response = await axios.get('/api/recipes'); //gets all of the recipes in the database. 
                 console.log('Request URL: ',`/api/recipes?userOwner=${userID}` );
 
-                const userRecipes = response.data.data.filter(recipe => recipe.userOwner === userID);
-
-                
-                setRecipes(userRecipes);
+                const userRecipes = response.data.data.filter(recipe => recipe.userOwner === userID); //filters the recipes from the database to include only user's recipes.
+                setRecipes(userRecipes); //assigns the filtered recipes to a variable called userRecipes.
                 console.log('Filtered Recipes: ', userRecipes);
 
+                  //Finds the 'favorite' category of the user(the category they use the most in their recipes).
+                if(userRecipes.length > 0){
+                  const categoryCounts = {};
+                  userRecipes.forEach(recipe => { //counts all of the instances of each category of recipe the user has created and assigns each count to categoryCounts
+                    const category = recipe.category;
+                    categoryCounts[category] = (categoryCounts[category])+1;
+                  });
+                  
+                  const favoriteCategory = Object.keys(categoryCounts).reduce((a,b)=> //uses categoryCount to find whihc category of recipe the user has the most of and assigns it to favoriteCategory
+                    categoryCounts[a] > categoryCounts[b] ? a : b
+                  );
+
+                  setFavoriteCategory(favoriteCategory); //sets the favoriteCategory
+                  setLoadingCategory(false);// Set loading to false once the category is calculated
+                  console.log('Favorite Category: ', favoriteCategory);
+                }
+
+                //filters the database for just recipes that fall under the same category as the user's favorite category and are not the user's recipes. 
+              
               } catch (error) {
                 console.error(error);
               }
           };
+
           fetchRecipe();
 
           return () => {
@@ -62,6 +84,7 @@ const HomePage = () => {
         };
 
         }, []);
+
 
         const linearSearchRecipes = (recipes , query) => {  //linear search algorithm for homepage search function.
           const lowerQuery = query.toLowerCase();
@@ -85,6 +108,45 @@ const HomePage = () => {
             setFilteredRecipes(results);
           }
         }, [searchQuery, recipes]);
+
+        //reccommended recipes 
+        useEffect(() => {
+
+          const recommendRecipes = async () => {
+            try{
+
+              if(favoriteCategory){
+                const userID = window.localStorage.getItem('userID');
+              const response = await axios.get('/api/recipes');
+              const allRecipes = response.data.data;
+              
+              console.log("Favorite Category:", favoriteCategory);
+              console.log("Current UserID:", userID);
+              console.log("All Recipes:", allRecipes);
+
+              const recommendations = [];
+              for(let i = 0; i < allRecipes.length; i++){
+                const recipeCategory = allRecipes[i].category;
+                const recipeOwner = allRecipes[i].userOwner;
+                if(recipeCategory === favoriteCategory && recipeOwner !== userID){
+                  recommendations.push(allRecipes[i]);
+                }
+              }
+
+              console.log('filtered recommendations: ', recommendations);
+              setRecommendedRecipes(recommendations);
+              }
+              
+            } catch (error){
+              console.error(error);
+            }
+          }; 
+
+          recommendRecipes();
+
+        }, [favoriteCategory]);
+
+        
 
         const fetchSimilarRecipes = async (recipe) => {
           try{
@@ -123,9 +185,125 @@ const HomePage = () => {
                 }
             };
 
+
+
        
   return (
     <Container maxW='container.xl' py={12}>
+
+      {/*ChakraUi Drawer Component for recommended recipes of a specific category*/}
+      <HStack wrap="wrap">
+            <For each={["bottom"]}>
+              {(placement) => (
+                <Drawer.Root key='bottom' placement='bottom'>
+                  <Drawer.Trigger asChild>
+                    <Button variant="outline" size="sm" color='white' bg = '#536878'_hover ={{transform: 'translateY(0px)', shadow: 'md'}} >
+                      Recipes You Might Like 
+                    </Button>
+                  </Drawer.Trigger>
+                  <Portal>
+                    <Drawer.Backdrop />
+                    <Drawer.Positioner>
+                      <Drawer.Content
+                        roundedTop={placement === "bottom" ? "l3" : undefined}
+                        roundedBottom={placement === "top" ? "l3" : undefined}
+                      >
+                        <Drawer.Header>
+                          <Drawer.Title>
+                          {loadingCategory ? 'Loading your favorite category...' : `You seem to like ${favoriteCategory} recipes. Here are more ${favoriteCategory} recipes:`}
+                          </Drawer.Title>
+                        </Drawer.Header>
+                        <Drawer.Body>
+                        {loadingCategory ? (
+                          <Text>Loading...</Text>
+                        ) : (
+                          
+                          <HStack spacing ={8}>
+                            <SimpleGrid
+                              columns={{
+                                base:1,
+                                md:2,
+                                lg:3
+                              }}
+                              gap='30px'
+                              w={'full'}
+                            >
+                              {recommendedRecipes.map((recipe) => (
+                                <Dialog.Root key={recipe._id}>
+                                  <Dialog.Trigger asChild>
+                                    <div style={{ cursor: 'pointer' }}>
+                                      <RecipeCard recipe={recipe} />
+                                    </div>
+                                  </Dialog.Trigger>
+                                  <Portal>
+                                    <Dialog.Backdrop bg="blackAlpha.600" backdropFilter="blur(4px)" />
+                                    <Dialog.Positioner>
+                                      <Dialog.Content
+                                        bg="#EAE0C8"
+                                        color='#536878'
+                                        borderRadius="lg"
+                                        boxShadow="lg"
+                                        maxW="lg"
+                                        w="full"
+                                        p={6}
+                                      >
+                                        <Dialog.Header>
+                                          <Text fontSize="xl" fontWeight="bold">
+                                            {recipe.name}
+                                          </Text>
+                                          <Dialog.CloseTrigger asChild>
+                                            <CloseButton size="sm" bg='#536878' _hover ={{transform: 'translateY(0px)', shadow: 'md'}}/>
+                                          </Dialog.CloseTrigger>
+                                        </Dialog.Header>
+                                        <Dialog.Body>
+                                          <Text fontWeight="bold" mb={2}>Ingredients:</Text>
+                                          <ul>
+                                            {recipe.ingredient.map((ing, index) => (
+                                              <li key={index}>{ing}</li>
+                                            ))}
+                                          </ul>
+                                          <Text mt={4} fontWeight="bold">Instructions:</Text>
+                                          <Text>{recipe.instruction}</Text>
+                                          <Text mt={4}>
+                                            <strong>Cooking Time:</strong> {recipe.cookingTime} minutes
+                                          </Text>
+
+                                          {recipe.image && (
+                                            <img
+                                              src={recipe.image}
+                                              alt={recipe.name}
+                                              style={{
+                                                width: '100%',
+                                                marginTop: '1rem',
+                                                borderRadius: '10px',
+                                              }}
+                                            />
+                                          )}
+                                        </Dialog.Body>
+                                      </Dialog.Content>
+                                    </Dialog.Positioner>
+                                  </Portal>
+                                </Dialog.Root>
+                              ))}
+                            </SimpleGrid>
+                          </HStack>
+                        )}
+                        </Drawer.Body>
+                        <Drawer.Footer>
+                        </Drawer.Footer>
+                        <Drawer.CloseTrigger asChild>
+                          <CloseButton size="sm" />
+                        </Drawer.CloseTrigger>
+                      </Drawer.Content>
+                    </Drawer.Positioner>
+                  </Portal>
+                </Drawer.Root>
+              )}
+            </For>
+          </HStack>
+          {/*End of chakraUI drawer componenet for recommended recipes (Recipes You Might Like)*/}
+
+
       <VStack spacing ={8}>
         <Text
           fontSize={30}
@@ -351,8 +529,15 @@ const HomePage = () => {
           </Text>
         )}
       </VStack>
+
+
+      
+
+
       <Toaster />
     </Container>
+
+    
   )
 };
 
