@@ -31,7 +31,7 @@ const HomePage = () => {
         const [favoriteCategory, setFavoriteCategory] = useState('');
         const [userRecipes, setUserRecipes] = useState([]);
 
-        const [loadingCategory, setLoadingCategory] = useState(true);
+        const [noRecommendations, setNoRecommendations] = useState(true); //state to show if there are no recommendations
         const [recommendedRecipes, setRecommendedRecipes] = useState([]);
 
         
@@ -58,7 +58,7 @@ const HomePage = () => {
                   const categoryCounts = {};
                   userRecipes.forEach(recipe => { //counts all of the instances of each category of recipe the user has created and assigns each count to categoryCounts
                     const category = recipe.category;
-                    categoryCounts[category] = (categoryCounts[category])+1;
+                    categoryCounts[category] = (categoryCounts[category] || 0)+1;
                   });
                   
                   const favoriteCategory = Object.keys(categoryCounts).reduce((a,b)=> //uses categoryCount to find whihc category of recipe the user has the most of and assigns it to favoriteCategory
@@ -66,7 +66,6 @@ const HomePage = () => {
                   );
 
                   setFavoriteCategory(favoriteCategory); //sets the favoriteCategory
-                  setLoadingCategory(false);// Set loading to false once the category is calculated
                   console.log('Favorite Category: ', favoriteCategory);
                 }
 
@@ -112,17 +111,13 @@ const HomePage = () => {
         //reccommended recipes 
         useEffect(() => {
 
-          const recommendRecipes = async () => {
+          const recommendRecipes = async () => { //function to iterate through the database of recipes looking for recipes that share a category witht he user's most used recipe category. 
             try{
 
               if(favoriteCategory){
                 const userID = window.localStorage.getItem('userID');
               const response = await axios.get('/api/recipes');
               const allRecipes = response.data.data;
-              
-              console.log("Favorite Category:", favoriteCategory);
-              console.log("Current UserID:", userID);
-              console.log("All Recipes:", allRecipes);
 
               const recommendations = [];
               for(let i = 0; i < allRecipes.length; i++){
@@ -135,6 +130,11 @@ const HomePage = () => {
 
               console.log('filtered recommendations: ', recommendations);
               setRecommendedRecipes(recommendations);
+              }
+              if(recommendations > 0){
+                setNoRecommendations(true);
+              }else{
+                setNoRecommendations(false);
               }
               
             } catch (error){
@@ -210,12 +210,12 @@ const HomePage = () => {
                       >
                         <Drawer.Header>
                           <Drawer.Title>
-                          {loadingCategory ? 'Loading your favorite category...' : `You seem to like ${favoriteCategory} recipes. Here are more ${favoriteCategory} recipes:`}
+                          {`You seem to like ${favoriteCategory} recipes. Here are more ${favoriteCategory} recipes:`}
                           </Drawer.Title>
                         </Drawer.Header>
                         <Drawer.Body>
-                        {loadingCategory ? (
-                          <Text>Loading...</Text>
+                        {noRecommendations ? (
+                          <Text>There are no recommendations yet...Check back later!</Text>
                         ) : (
                           
                           <HStack spacing ={8}>
