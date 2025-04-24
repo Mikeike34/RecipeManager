@@ -1,5 +1,6 @@
 import express from 'express'; //using express to build out an API
 import dotenv from 'dotenv';
+import cors from 'cors';
 import { connectDB } from './config/db.js';
 import recipeRoutes from "./routes/recipe.route.js";
 import userRoutes from "./routes/user.route.js";
@@ -9,6 +10,9 @@ dotenv.config();
 
 const app = express(); //variable for the express function
 const PORT = process.env.PORT; 
+
+app.use(cors()); //allows cross-origin requests
+app.options('*', cors()); //handles preflight requests
 
 
 app.use(express.json());
