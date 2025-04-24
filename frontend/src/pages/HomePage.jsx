@@ -113,13 +113,13 @@ const HomePage = () => {
 
           const recommendRecipes = async () => { //function to iterate through the database of recipes looking for recipes that share a category witht he user's most used recipe category. 
             try{
+              const recommendations = [];
 
               if(favoriteCategory){
                 const userID = window.localStorage.getItem('userID');
               const response = await axios.get('/api/recipes');
               const allRecipes = response.data.data;
 
-              const recommendations = [];
               for(let i = 0; i < allRecipes.length; i++){
                 const recipeCategory = allRecipes[i].category;
                 const recipeOwner = allRecipes[i].userOwner;
